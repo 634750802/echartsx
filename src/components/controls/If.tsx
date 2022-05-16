@@ -1,4 +1,4 @@
-import { FC, ReactElement, ReactNode } from 'react';
+import React, { FC, ReactElement, ReactNode } from 'react';
 import Once from './Once'
 
 export interface IfProps {

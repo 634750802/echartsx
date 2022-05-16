@@ -1,8 +1,12 @@
 import { ComponentOption } from 'echarts/types/src/util/types';
 import deepEquals from 'fast-deep-equal/react';
-import { FC, useContext, useEffect, useId, useRef } from 'react';
+import React, { FC, useContext, useEffect, useMemo, useRef } from 'react';
 import { OptionContext } from '../EChartsx';
 
+let id = 0
+function useId () {
+  return useMemo(() => `:${++id}`, [])
+}
 
 export function withBaseOption<O extends ComponentOption>(
   mainType: Exclude<O['mainType'], undefined>,

@@ -4,7 +4,7 @@ import { EChartsOption } from 'echarts/types/dist/shared';
 import { LocaleOption } from 'echarts/types/src/core/locale';
 import { ComponentOption as EChartsComponentOption, RendererType } from 'echarts/types/src/util/types';
 import deepEqual from 'fast-deep-equal/react';
-import {
+import React, {
   createContext,
   HTMLAttributes,
   ReactNode,
@@ -105,7 +105,6 @@ export default function EChartsx({ children, theme, init: initProp, ...props }: 
   }, []);
 
   const remove = useCallback((id: string) => {
-    console.debug('remove:', id);
     if (!(id in options)) {
       return;
     }

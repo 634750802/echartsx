@@ -2,9 +2,7 @@ import react from '@vitejs/plugin-react';
 import typescript from '@rollup/plugin-typescript';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { defineConfig } from 'vite';
-import { peerDependencies } from './package.json';
 
-console.debug(peerDependencies);
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
