@@ -1,5 +1,5 @@
 {
-  "name": "@634750802/echartsx",
+  "name": "@djagger/echartsx",
   "version": "0.0.1",
   "scripts": {
     "dev": "vite",
@@ -8,7 +8,7 @@
   "type": "module",
   "module": "dist/index.js",
   "types": "dist",
-  "files": ["dist"],
+  "files": ["LICENSE", "dist"],
   "devDependencies": {
     "@rollup/plugin-typescript": "^8.3.2",
     "@types/react": "^18.0.0",
@@ -31,8 +31,5 @@
     "react-dom": "^18.0.0",
     "tslib": "*"
   },
-  "repository":"https://github.com/634750802/echartsx",
-  "publishConfig": {
-    "registry":"https://npm.pkg.github.com"
-  }
+  "license": "MIT"
 }
