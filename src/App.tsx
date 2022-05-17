@@ -26,7 +26,9 @@ function App() {
                        interval={1000} formatTime={format} >
         <Title text='title' textAlign='center' left='50%' />
       </SortingBarChart>
-      <RankChart height={1200} data={rankData} fields={{ name: 'repo_name', time: 'event_year', value: 'total', rank: 'rank' }} />
+      <RankChart height={1200} data={rankData} fields={{ name: 'repo_name', time: 'event_year', value: 'total', rank: 'rank' }} >
+        <Title text='title' textAlign='center' left='50%' />
+      </RankChart>
     </div>
   );
 }

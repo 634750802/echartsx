@@ -63,8 +63,6 @@ export function useWebRTCRecorder() {
     throw new Error('Not support recorder')
   }
 
-  console.log(supportedType)
-
   const start = useCallback(() => {
     const canvas = canvasRef.current
     if (!canvas) {

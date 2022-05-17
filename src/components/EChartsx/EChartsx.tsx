@@ -166,7 +166,6 @@ function EChartsx({
       .forEach(component => addComponent(option, component));
     if (Object.keys(option).length) {
       echartsInstanceRef.current?.setOption(option, shouldFullReload.current);
-      console.debug(option)
       if (!forwarded.current) {
         applyRef(forwardedRef, echartsInstanceRef.current);
         forwarded.current = true
