@@ -1,10 +1,9 @@
-import { RankChart, SortingBarChart } from '/src/charts';
+import { RankChart, SortingBarChart, Title } from './index';
 import { use } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import React from 'react';
 import rankData from './rank-data.json';
 import sortData from './sort-data.json';
-import { Title } from './components/option';
 
 const dft = new Intl.DateTimeFormat(['en-US'], {
   month: 'short',
