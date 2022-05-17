@@ -82,11 +82,13 @@ function SortingBarChart<T, nameKey extends TypedKey<T, string>, timeKey extends
                     height="0" tooltip={{ show: false }} />
       </Once>
       <Once dependencies={sortedNames}>
-        <Axis.Category.Y animationDurationUpdate={interval / 3}
-                         animationDuration={0}
+        <Axis.Category.Y animationDurationUpdate={interval}
+                         animationDuration={interval / 3}
+                         animationEasing='linear'
+                         animationEasingUpdate='linear'
                          data={sortedNames as unknown[] as string[]} inverse max={10} />
       </Once>
-      <Toolbox feature={{ myDownload: myDownload(download) }} />
+      {recording ? undefined : <Toolbox feature={{ myDownload: myDownload(download) }} />}
       <ScatterSeries
         coordinateSystem="singleAxis"
         data={[{ value: time as unknown as string, id: 'time' }]}
