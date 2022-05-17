@@ -1,11 +1,13 @@
-import { init, use } from 'echarts/core';
-import { CanvasRenderer } from 'echarts/renderers';
-import { EChartsOption } from 'echarts/types/dist/shared';
+import { getDevicePixelRatio } from '/src/components/EChartsx/utils';
+import { init } from 'echarts/core';
+import { EChartsOption, EChartsType } from 'echarts/types/dist/shared';
 import { LocaleOption } from 'echarts/types/src/core/locale';
 import { ComponentOption as EChartsComponentOption, RendererType } from 'echarts/types/src/util/types';
 import deepEqual from 'fast-deep-equal/react';
 import React, {
   createContext,
+  ForwardedRef,
+  forwardRef,
   HTMLAttributes,
   ReactNode,
   useCallback,
@@ -17,18 +19,20 @@ import React, {
 } from 'react';
 
 
+export interface EChartsInitOptions {
+  locale?: string | LocaleOption;
+  renderer?: RendererType;
+  devicePixelRatio?: number;
+  useDirtyRect?: boolean;
+  ssr?: boolean;
+  width?: number;
+  height?: number;
+}
+
 export interface OptionProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
   theme?: string | object;
-  init?: {
-    locale?: string | LocaleOption;
-    renderer?: RendererType;
-    devicePixelRatio?: number;
-    useDirtyRect?: boolean;
-    ssr?: boolean;
-    width?: number;
-    height?: number;
-  };
+  init?: EChartsInitOptions;
   defaults?: Partial<EChartsOption>;
 }
 
@@ -89,15 +93,31 @@ export const OptionContext = createContext<{
 
 OptionContext.displayName = 'EChartsxContext';
 
-use(CanvasRenderer);
 
-export default function EChartsx({ children, theme, init: initProp, defaults = {}, ...props }: OptionProps) {
+function applyRef<T>(ref: ForwardedRef<T>, value: T) {
+  if (ref) {
+    if (typeof ref === 'function') {
+      ref(value);
+    } else {
+      ref.current = value;
+    }
+  }
+}
+
+function EChartsx({
+  children,
+  theme,
+  init: initProp = {},
+  defaults = {},
+  ...props
+}: OptionProps, forwardedRef: ForwardedRef<EChartsType | undefined>) {
   const options = useMemo<Record<string, EChartsComponentOption>>(() => ({}), []);
   const ref = useRef<HTMLDivElement>(null);
-  const echartsInstanceRef = useRef<ReturnType<typeof init>>();
+  const echartsInstanceRef = useRef<EChartsType>();
   const [version, setVersion] = useState(0);
   const shouldFullReload = useRef(true);
   const changingKeys = useRef<Record<string, boolean>>({});
+  const forwarded = useRef(false)
 
   const set = useCallback((id: string, component: EChartsComponentOption) => {
     if (deepEqual(options[id], component)) {
@@ -116,23 +136,28 @@ export default function EChartsx({ children, theme, init: initProp, defaults = {
     shouldFullReload.current = true;
     changingKeys.current[id] = true;
     setVersion(version => version + 1);
-
   }, []);
 
   const markNoMerge = useCallback(() => {
-    shouldFullReload.current = true
-  }, [])
+    shouldFullReload.current = true;
+  }, []);
 
   useLayoutEffect(() => {
-    if (ref.current) {
-      echartsInstanceRef.current = init(ref.current, theme, initProp);
-    } else {
-      echartsInstanceRef.current?.dispose();
-      echartsInstanceRef.current = undefined;
-    }
-    return () => {
-      echartsInstanceRef.current?.dispose();
+    const dispose = () => {
+      if (echartsInstanceRef.current) {
+        echartsInstanceRef.current.dispose();
+        echartsInstanceRef.current = undefined;
+        applyRef(forwardedRef, undefined);
+      }
     };
+
+    if (ref.current) {
+      echartsInstanceRef.current = init(ref.current, theme, { devicePixelRatio: getDevicePixelRatio(), ...initProp });
+      forwarded.current = false
+      return dispose;
+    } else {
+      dispose();
+    }
   }, []);
 
   useEffect(() => {
@@ -141,6 +166,11 @@ export default function EChartsx({ children, theme, init: initProp, defaults = {
       .forEach(component => addComponent(option, component));
     if (Object.keys(option).length) {
       echartsInstanceRef.current?.setOption(option, shouldFullReload.current);
+      console.debug(option)
+      if (!forwarded.current) {
+        applyRef(forwardedRef, echartsInstanceRef.current);
+        forwarded.current = true
+      }
     }
     shouldFullReload.current = false;
     changingKeys.current = {};
@@ -153,3 +183,5 @@ export default function EChartsx({ children, theme, init: initProp, defaults = {
     </OptionContext.Provider>
   );
 }
+
+export default forwardRef(EChartsx);

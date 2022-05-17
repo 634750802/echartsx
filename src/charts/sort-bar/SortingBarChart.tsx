@@ -1,37 +1,60 @@
 import { TypedKey, useRealtime, UseRealtimeOptions } from '/src/charts/sort-bar/hook';
-import { Axis, BarSeries, Grid, Legend, ScatterSeries, SingleAxis, Tooltip } from '/src/components/option';
-import { EChartsx, Once } from '/src/index';
+import {
+  Axis,
+  BarSeries,
+  Grid,
+  Legend,
+  myDownload,
+  ScatterSeries,
+  SingleAxis,
+  Toolbox,
+  Tooltip,
+} from '/src/components/option';
+import { EChartsInitOptions, EChartsx, Once } from '/src/index';
+import { withEChartsRecorder } from '/src/utils/useEChartsRecorder';
 import { TransformComponent } from 'echarts/components';
 import { use } from 'echarts/core';
 import { LabelLayout, UniversalTransition } from 'echarts/features';
-import { CallbackDataParams } from 'echarts/types/dist/shared';
-import React, { useCallback, useMemo } from 'react';
+import { CallbackDataParams, EChartsType } from 'echarts/types/dist/shared';
+import React, { ForwardedRef, forwardRef, PropsWithChildren, useCallback, useMemo } from 'react';
 
-interface SortingBarChartProps<T, nameKey extends TypedKey<T, string>, timeKey extends TypedKey<T, string>> extends UseRealtimeOptions<T, nameKey, timeKey> {
+use([TransformComponent, LabelLayout, UniversalTransition]);
+
+export interface SortingBarChartProps<T, nameKey extends TypedKey<T, string>, timeKey extends TypedKey<T, string>> extends Omit<UseRealtimeOptions<T, nameKey, timeKey>, 'onStart' | 'onStop'>, EChartsInitOptions {
   fields: UseRealtimeOptions<T, nameKey, timeKey>['fields'] & {
     value: string & keyof T
   };
   formatTime?: (date: unknown) => string;
 }
 
-use([TransformComponent, LabelLayout, UniversalTransition]);
-
-export function SortingBarChart<T, nameKey extends TypedKey<T, string>, timeKey extends TypedKey<T, string>>({
+function SortingBarChart<T, nameKey extends TypedKey<T, string>, timeKey extends TypedKey<T, string>>({
   formatTime,
+  fields,
+  data,
+  interval,
+  children,
   ...opts
-}: SortingBarChartProps<T, nameKey, timeKey>) {
-  const { part: source, sortedNames, time } = useRealtime<T, nameKey, timeKey>(opts);
+}: PropsWithChildren<SortingBarChartProps<T, nameKey, timeKey>>, forwardedRef: ForwardedRef<EChartsType>) {
+  const { ref, recording, download, start, stop } = withEChartsRecorder(forwardedRef);
+
+  const { part: source, sortedNames, time } = useRealtime<T, nameKey, timeKey>({
+    fields,
+    data,
+    interval,
+    onStart: start,
+    onStop: stop,
+  });
   const { max, min } = useMemo(() => {
-    return opts.data.reduce((old, current) => {
-      if ((current[opts.fields.time] as unknown as string) > old.max) {
-        old.max = current[opts.fields.time] as unknown as string;
+    return data.reduce((old, current) => {
+      if ((current[fields.time] as unknown as string) > old.max) {
+        old.max = current[fields.time] as unknown as string;
       }
-      if ((current[opts.fields.time] as unknown as string) < old.min) {
-        old.min = current[opts.fields.time] as unknown as string;
+      if ((current[fields.time] as unknown as string) < old.min) {
+        old.min = current[fields.time] as unknown as string;
       }
       return old;
     }, { max: '', min: 'zzzzzzzzzzzzzzzzzzzzzzz' });
-  }, [opts.data]);
+  }, [data]);
 
   const timeLabelFormatter = useCallback((p: CallbackDataParams) => {
     return formatTime?.(p.value) ?? String(p.value);
@@ -39,35 +62,44 @@ export function SortingBarChart<T, nameKey extends TypedKey<T, string>, timeKey 
 
   return (
     <EChartsx
-      init={{ width: 1000, height: 600, renderer: 'canvas' }}
+      init={{ renderer: 'canvas', ...opts }}
       defaults={{
         animationDuration: 0,
-        animationDurationUpdate: opts.interval,
+        animationDurationUpdate: interval,
         animationEasing: 'linear',
         animationEasingUpdate: 'linear',
-      }}>
-      <Once dependencies={opts.data}>
-        <Grid containLabel left={0} />
+      }}
+      ref={ref}
+    >
+      <Once dependencies={[min, max, sortedNames]}>
+        <Grid containLabel left={8} top={32} bottom={48} right={48} />
         <Legend type="scroll" orient="horizontal" />
-        <Axis.Value.X max="dataMax" axisLabel={{ showMaxLabel: false }} position="top"  />
+        <Axis.Value.X max="dataMax" axisLabel={{ showMaxLabel: false }} position="top" />
         <Tooltip trigger="item" renderMode="html" />
-        <SingleAxis type="time" min={min} max={max} bottom="5%" height="0" tooltip={{ show: false }} />
-        <Axis.Category.Y animationDurationUpdate={opts.interval / 3}
+      </Once>
+      <Once dependencies={[min, max]}>
+        <SingleAxis type="time" min={min} max={max} bottom="24" axisLabel={{ inside: true }} axisTick={{ show: false }}
+                    height="0" tooltip={{ show: false }} />
+      </Once>
+      <Once dependencies={sortedNames}>
+        <Axis.Category.Y animationDurationUpdate={interval / 3}
                          animationDuration={0}
                          data={sortedNames as unknown[] as string[]} inverse max={10} />
       </Once>
+      <Toolbox feature={{ myDownload: myDownload(download) }} />
       <ScatterSeries
         coordinateSystem="singleAxis"
         data={[{ value: time as unknown as string, id: 'time' }]}
         symbolSize={6}
-        symbolOffset={-3}
-        symbol='path://M,90,0,H,0,l,45,90,L,90,0,z'
-        label={{ show: true, position: 'top', formatter: timeLabelFormatter }}
+        symbolOffset={3}
+        symbolRotate={180}
+        symbol="path://M,90,0,H,0,l,45,90,L,90,0,z"
+        label={{ show: true, position: 'bottom', formatter: timeLabelFormatter }}
         emphasis={{ disabled: true }}
       />
       <BarSeries
-        data={sortedNames.map(name => source[name as unknown as string]?.[opts.fields.value] ?? 0)}
-        encode={{ x: opts.fields.value, y: opts.fields.name }}
+        data={sortedNames.map(name => source[name as unknown as string]?.[fields.value] ?? 0)}
+        encode={{ x: fields.value, y: fields.name }}
         realtimeSort
         colorBy="data"
         label={{
@@ -76,6 +108,9 @@ export function SortingBarChart<T, nameKey extends TypedKey<T, string>, timeKey 
           valueAnimation: true,
         }}
       />
+      {children}
     </EChartsx>
   );
 }
+
+export default forwardRef(SortingBarChart);

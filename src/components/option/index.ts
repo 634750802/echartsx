@@ -7,3 +7,6 @@ export { default as Legend } from './legend';
 export { default as Tooltip } from './tooltip';
 export * from './gird'
 export * from './singleAxis'
+export * from './toolbox'
+export * from './title'
+export * from './base'

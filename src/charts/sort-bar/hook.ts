@@ -7,6 +7,8 @@ export interface UseRealtimeOptions<T, nameKey extends TypedKey<T, string>, time
     name: nameKey
   };
   interval: number;
+  onStart?: () => void;
+  onStop?: () => void;
 }
 
 export type TypedKey<T, V> = string & keyof {
@@ -20,6 +22,8 @@ export function useRealtime<T, nameKey extends TypedKey<T, string>, timeKey exte
     name: nameField,
   },
   interval,
+  onStart,
+  onStop,
 }: UseRealtimeOptions<T, nameKey, timeKey>) {
   const [part, setPart] = useState<Record<string, T>>({} as Record<string, T>);
   const currentTime = useRef<T[timeKey]>();
@@ -71,8 +75,10 @@ export function useRealtime<T, nameKey extends TypedKey<T, string>, timeKey exte
 
   useEffect(() => {
     multer();
+    onStart?.()
     const h = setInterval(() => {
       if (!multer()) {
+        onStop?.()
         clearInterval(h);
       }
     }, interval);
