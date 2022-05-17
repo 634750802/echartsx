@@ -10,7 +10,7 @@ import {
   Toolbox,
   Tooltip,
 } from '/src/components/option';
-import { EChartsInitOptions, EChartsx, Once } from '/src/index';
+import { EChartsInitOptions, EChartsx, If, Once } from '/src/index';
 import { withEChartsRecorder } from '/src/utils/useEChartsRecorder';
 import { TransformComponent } from 'echarts/components';
 import { use } from 'echarts/core';
@@ -88,7 +88,7 @@ function SortingBarChart<T, nameKey extends TypedKey<T, string>, timeKey extends
                          animationEasingUpdate='linear'
                          data={sortedNames as unknown[] as string[]} inverse max={10} />
       </Once>
-      {recording ? undefined : <Toolbox feature={{ myDownload: myDownload(download) }} />}
+      <If cond={!recording} once then={() => <Toolbox feature={{ myDownload: myDownload(download) }} />} />
       <ScatterSeries
         coordinateSystem="singleAxis"
         data={[{ value: time as unknown as string, id: 'time' }]}

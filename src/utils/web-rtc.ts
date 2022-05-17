@@ -94,7 +94,7 @@ export function useWebRTCRecorder() {
 
   const stop = useCallback(() => {
     const canvas = canvasRef.current
-    if (!canvas) {
+    if (!canvas || !mediaRecorderRef.current) {
       return;
     }
     console.log('MediaRecorder stopped', mediaRecorderRef.current);
@@ -103,7 +103,7 @@ export function useWebRTCRecorder() {
 
   const download = useCallback(() => {
     const canvas = canvasRef.current
-    if (!canvas) {
+    if (!canvas || !recordedBlobsRef.current) {
       return;
     }
     const blob = new Blob(recordedBlobsRef.current, { type: supportedType });

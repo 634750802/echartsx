@@ -23,7 +23,7 @@ function App() {
   return (
     <div className="App">
       <SortingBarChart height={360} width={480} fields={{ name: 'repo_name', time: 'event_month', value: 'total' }} data={sortData}
-                       interval={1000} formatTime={format} >
+                       interval={500} formatTime={format} >
         <Title text='title' textAlign='center' left='50%' />
       </SortingBarChart>
       <RankChart height={1200} data={rankData} fields={{ name: 'repo_name', time: 'event_year', value: 'total', rank: 'rank' }} >
