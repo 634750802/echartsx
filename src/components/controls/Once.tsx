@@ -1,10 +1,13 @@
-import React, { FC, PropsWithChildren, useRef } from 'react';
+import React, { DependencyList, FC, PropsWithChildren, useMemo } from 'react';
 
-
-const Once: FC<PropsWithChildren<any>> = function Once ({ children }) {
-  return useRef(children).current
+export interface OnceProps {
+  dependencies?: DependencyList;
 }
 
-Once.displayName = 'Once'
+const Once: FC<PropsWithChildren<OnceProps>> = function Once({ dependencies, children }) {
+  return useMemo(() => <>{children}</>, dependencies ?? []);
+};
 
-export default Once
+Once.displayName = 'Once';
+
+export default Once;

@@ -1,48 +1,25 @@
-import { useEffect, useState } from 'react';
-import { Axis, BarSeries, Dataset, EChartsx, Grid, Legend, Once, Tooltip } from './index';
+import { SortingBarChart } from '/src/charts/sort-bar';
+import React from 'react';
+import data from './sort-data.json';
+
+const dft = new Intl.DateTimeFormat(['en-US'], {
+  month: 'short',
+  year: 'numeric'
+})
+
+const format = (val: unknown): string => {
+  const date = new Date(val as any)
+
+  return `${dft.format(date)}`
+}
 
 function App() {
-  const [datasource, setDatasource] = useState([
-    { name: 'first', v1: 2, v2: 5 },
-    { name: 'second', v1: 6, v2: 1 },
-    { name: 'third', v1: 1, v2: 3 },
-  ]);
-
-  useEffect(() => {
-    const h = setInterval(() => {
-      setDatasource(arr => arr.map(item => ({
-        name: item.name,
-        v1: Math.random(),
-        v2: Math.random(),
-      })));
-    }, 1500);
-    return () => {
-      clearInterval(h);
-    };
-  }, []);
-
   return (
     <div className="App">
-      <EChartsx init={{ width: 400, height: 400, renderer: 'canvas' }}>
-        <BasicXY />
-        <Dataset source={datasource} />
-        <BarSeries name="s1" encode={{ x: 'name', y: 'v1' }} />
-        <BarSeries name="s2" encode={{ x: 'name', y: 'v2' }} />
-      </EChartsx>
+      <SortingBarChart fields={{ name: 'repo_name', time: 'event_month', value: 'total' }} data={data}
+                       interval={1000} formatTime={format} />
     </div>
   );
 }
-
-const BasicXY = () => {
-  return (
-    <Once>
-      <Grid containLabel />
-      <Legend />
-      <Axis.Category.X />
-      <Axis.Value.Y />
-      <Tooltip trigger="axis" />
-    </Once>
-  );
-};
 
 export default App;

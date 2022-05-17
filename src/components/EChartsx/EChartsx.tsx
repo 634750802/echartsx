@@ -29,6 +29,7 @@ export interface OptionProps extends HTMLAttributes<HTMLDivElement> {
     width?: number;
     height?: number;
   };
+  defaults?: Partial<EChartsOption>;
 }
 
 function addComponent(option: EChartsOption, item: EChartsComponentOption) {
@@ -76,8 +77,11 @@ function addComponent(option: EChartsOption, item: EChartsComponentOption) {
 export const OptionContext = createContext<{
   set(id: string, component: EChartsComponentOption): void
   remove(id: string): void
+  markNoMerge(): void
 }>({
   set() {
+  },
+  markNoMerge() {
   },
   remove() {
   },
@@ -87,7 +91,7 @@ OptionContext.displayName = 'EChartsxContext';
 
 use(CanvasRenderer);
 
-export default function EChartsx({ children, theme, init: initProp, ...props }: OptionProps) {
+export default function EChartsx({ children, theme, init: initProp, defaults = {}, ...props }: OptionProps) {
   const options = useMemo<Record<string, EChartsComponentOption>>(() => ({}), []);
   const ref = useRef<HTMLDivElement>(null);
   const echartsInstanceRef = useRef<ReturnType<typeof init>>();
@@ -115,6 +119,10 @@ export default function EChartsx({ children, theme, init: initProp, ...props }: 
 
   }, []);
 
+  const markNoMerge = useCallback(() => {
+    shouldFullReload.current = true
+  }, [])
+
   useLayoutEffect(() => {
     if (ref.current) {
       echartsInstanceRef.current = init(ref.current, theme, initProp);
@@ -128,16 +136,18 @@ export default function EChartsx({ children, theme, init: initProp, ...props }: 
   }, []);
 
   useEffect(() => {
-    const option: EChartsOption = {};
+    const option: EChartsOption = shouldFullReload.current ? { ...defaults } : {};
     (shouldFullReload.current ? Object.values(options) : Object.keys(changingKeys.current).map(key => options[key]))
       .forEach(component => addComponent(option, component));
-    echartsInstanceRef.current?.setOption(option, shouldFullReload.current);
+    if (Object.keys(option).length) {
+      echartsInstanceRef.current?.setOption(option, shouldFullReload.current);
+    }
     shouldFullReload.current = false;
     changingKeys.current = {};
-  }, [version]);
+  }, [defaults, version]);
 
   return (
-    <OptionContext.Provider value={{ set, remove }}>
+    <OptionContext.Provider value={{ set, markNoMerge, remove }}>
       <div ref={ref} {...props} />
       {children}
     </OptionContext.Provider>
