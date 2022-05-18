@@ -5,7 +5,7 @@ import { TransformComponent } from 'echarts/components';
 import { use } from 'echarts/core';
 import { LabelLayout, UniversalTransition } from 'echarts/features';
 import { EChartsType } from 'echarts/types/dist/shared';
-import React, { ForwardedRef, forwardRef, Fragment, PropsWithChildren, useCallback, useMemo } from 'react';
+import { ForwardedRef, forwardRef, Fragment, PropsWithChildren, useCallback, useMemo } from 'react';
 import EChartsx, { EChartsInitOptions } from '../../components/EChartsx';
 
 export interface RankChartProps<T> extends EChartsInitOptions {

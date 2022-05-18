@@ -1,4 +1,4 @@
-import React, { DependencyList, FC, PropsWithChildren, useMemo } from 'react';
+import { DependencyList, FC, PropsWithChildren, useMemo } from 'react';
 
 export interface OnceProps {
   dependencies?: DependencyList;

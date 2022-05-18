@@ -98,7 +98,9 @@ export function useWebRTCRecorder() {
       return;
     }
     console.log('MediaRecorder stopped', mediaRecorderRef.current);
-    mediaRecorderRef.current?.stop();
+    if (mediaRecorderRef.current?.state !== 'inactive') {
+      mediaRecorderRef.current?.stop();
+    }
   }, []);
 
   const download = useCallback(() => {

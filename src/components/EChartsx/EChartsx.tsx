@@ -4,7 +4,7 @@ import { EChartsOption, EChartsType } from 'echarts/types/dist/shared';
 import { LocaleOption } from 'echarts/types/src/core/locale';
 import { ComponentOption as EChartsComponentOption, RendererType } from 'echarts/types/src/util/types';
 import deepEqual from 'fast-deep-equal/react';
-import React, {
+import {
   createContext,
   ForwardedRef,
   forwardRef,
@@ -34,6 +34,7 @@ export interface OptionProps extends HTMLAttributes<HTMLDivElement> {
   theme?: string | object;
   init?: EChartsInitOptions;
   defaults?: Partial<EChartsOption>;
+  debug?: boolean
 }
 
 function addComponent(option: EChartsOption, item: EChartsComponentOption) {
@@ -109,6 +110,7 @@ function EChartsx({
   theme,
   init: initProp = {},
   defaults = {},
+  debug = false,
   ...props
 }: OptionProps, forwardedRef: ForwardedRef<EChartsType | undefined>) {
   const options = useMemo<Record<string, EChartsComponentOption>>(() => ({}), []);
@@ -165,6 +167,9 @@ function EChartsx({
     (shouldFullReload.current ? Object.values(options) : Object.keys(changingKeys.current).map(key => options[key]))
       .forEach(component => addComponent(option, component));
     if (Object.keys(option).length) {
+      if (debug) {
+        console.debug('echartsx.set', option)
+      }
       echartsInstanceRef.current?.setOption(option, shouldFullReload.current);
       if (!forwarded.current) {
         applyRef(forwardedRef, echartsInstanceRef.current);

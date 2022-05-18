@@ -1,4 +1,3 @@
-import React from 'react';
 
 declare module "react" {
   function forwardRef<T, P = {}>(
@@ -8,3 +7,4 @@ declare module "react" {
 
 export * from './rank'
 export * from './sort-bar'
+export * from './line'

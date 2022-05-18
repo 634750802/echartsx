@@ -1,5 +1,5 @@
-import react from '@vitejs/plugin-react';
 import typescript from '@rollup/plugin-typescript';
+import react from '@vitejs/plugin-react';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { defineConfig } from 'vite';
 
@@ -13,21 +13,7 @@ export default defineConfig({
     }),
     visualizer(),
   ],
-  build: {
-    lib: {
-      entry: 'src/index.ts',
-      name: 'EChartsx',
-      fileName: 'index',
-      formats: ['es', 'cjs'],
-    },
-    rollupOptions: {
-      external: [
-        'react',
-        'react-dom',
-        'react/jsx-runtime',
-        'fast-deep-equal/react',
-        /^echarts/,
-      ],
-    },
+  optimizeDeps: {
+    include: ['react/jsx-runtime'],
   },
 });

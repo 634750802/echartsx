@@ -16,7 +16,7 @@ import { TransformComponent } from 'echarts/components';
 import { use } from 'echarts/core';
 import { LabelLayout, UniversalTransition } from 'echarts/features';
 import { CallbackDataParams, EChartsType } from 'echarts/types/dist/shared';
-import React, { ForwardedRef, forwardRef, PropsWithChildren, useCallback, useMemo } from 'react';
+import { ForwardedRef, forwardRef, PropsWithChildren, useCallback, useMemo } from 'react';
 
 use([TransformComponent, LabelLayout, UniversalTransition]);
 
