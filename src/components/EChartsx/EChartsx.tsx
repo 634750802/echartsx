@@ -1,4 +1,3 @@
-import { getDevicePixelRatio } from '/src/components/EChartsx/utils';
 import { init } from 'echarts/core';
 import { EChartsOption, EChartsType } from 'echarts/types/dist/shared';
 import { LocaleOption } from 'echarts/types/src/core/locale';
@@ -17,6 +16,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { getDevicePixelRatio } from './utils';
 
 
 export interface EChartsInitOptions {
@@ -34,7 +34,7 @@ export interface OptionProps extends HTMLAttributes<HTMLDivElement> {
   theme?: string | object;
   init?: EChartsInitOptions;
   defaults?: Partial<EChartsOption>;
-  debug?: boolean
+  debug?: boolean;
 }
 
 function addComponent(option: EChartsOption, item: EChartsComponentOption) {
@@ -119,7 +119,7 @@ function EChartsx({
   const [version, setVersion] = useState(0);
   const shouldFullReload = useRef(true);
   const changingKeys = useRef<Record<string, boolean>>({});
-  const forwarded = useRef(false)
+  const forwarded = useRef(false);
 
   const set = useCallback((id: string, component: EChartsComponentOption) => {
     if (deepEqual(options[id], component)) {
@@ -155,7 +155,7 @@ function EChartsx({
 
     if (ref.current) {
       echartsInstanceRef.current = init(ref.current, theme, { devicePixelRatio: getDevicePixelRatio(), ...initProp });
-      forwarded.current = false
+      forwarded.current = false;
       return dispose;
     } else {
       dispose();
@@ -168,12 +168,12 @@ function EChartsx({
       .forEach(component => addComponent(option, component));
     if (Object.keys(option).length) {
       if (debug) {
-        console.debug('echartsx.set', option)
+        console.debug('echartsx.set', option);
       }
       echartsInstanceRef.current?.setOption(option, shouldFullReload.current);
       if (!forwarded.current) {
         applyRef(forwardedRef, echartsInstanceRef.current);
-        forwarded.current = true
+        forwarded.current = true;
       }
     }
     shouldFullReload.current = false;

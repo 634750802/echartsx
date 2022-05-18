@@ -1,4 +1,8 @@
-import { TypedKey, useRealtime, UseRealtimeOptions } from '/src/charts/sort-bar/hook';
+import { TransformComponent } from 'echarts/components';
+import { use } from 'echarts/core';
+import { LabelLayout, UniversalTransition } from 'echarts/features';
+import { CallbackDataParams, EChartsType } from 'echarts/types/dist/shared';
+import { ForwardedRef, forwardRef, PropsWithChildren, useCallback, useMemo } from 'react';
 import {
   Axis,
   BarSeries,
@@ -9,14 +13,10 @@ import {
   SingleAxis,
   Toolbox,
   Tooltip,
-} from '/src/components/option';
-import { EChartsInitOptions, EChartsx, If, Once } from '/src/index';
-import { withEChartsRecorder } from '/src/utils/useEChartsRecorder';
-import { TransformComponent } from 'echarts/components';
-import { use } from 'echarts/core';
-import { LabelLayout, UniversalTransition } from 'echarts/features';
-import { CallbackDataParams, EChartsType } from 'echarts/types/dist/shared';
-import { ForwardedRef, forwardRef, PropsWithChildren, useCallback, useMemo } from 'react';
+} from '../../components/option';
+import { EChartsInitOptions, EChartsx, If, Once } from '../../index';
+import { withEChartsRecorder } from '../../utils/useEChartsRecorder';
+import { TypedKey, useRealtime, UseRealtimeOptions } from './hook';
 
 use([TransformComponent, LabelLayout, UniversalTransition]);
 
@@ -84,8 +84,8 @@ function SortingBarChart<T, nameKey extends TypedKey<T, string>, timeKey extends
       <Once dependencies={sortedNames}>
         <Axis.Category.Y animationDurationUpdate={interval}
                          animationDuration={interval / 3}
-                         animationEasing='linear'
-                         animationEasingUpdate='linear'
+                         animationEasing="linear"
+                         animationEasingUpdate="linear"
                          data={sortedNames as unknown[] as string[]} inverse max={10} />
       </Once>
       <If cond={!recording} once then={() => <Toolbox feature={{ myDownload: myDownload(download) }} />} />

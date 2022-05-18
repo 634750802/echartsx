@@ -1,8 +1,8 @@
-import { TypedKey } from '/src/charts/sort-bar/hook';
-import Axis from '/src/components/option/axis';
-import { Dataset, EChartsInitOptions, EChartsx, Grid, LineSeries, Once, Tooltip } from '/src/index';
 import { EChartsType } from 'echarts/types/dist/shared';
 import { ForwardedRef, forwardRef, Fragment, PropsWithChildren, useMemo } from 'react';
+import Axis from '../../components/option/axis';
+import { Dataset, EChartsInitOptions, EChartsx, Grid, LineSeries, Once, Tooltip } from '../../index';
+import { TypedKey } from '../sort-bar/hook';
 
 
 export interface LineChartProps<T> extends EChartsInitOptions {

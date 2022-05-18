@@ -1,12 +1,12 @@
-import { TypedKey } from '/src/charts/sort-bar/hook';
-import { Once } from '/src/components/controls';
-import { Axis, Dataset, Grid, LineSeries, Tooltip } from '/src/components/option';
 import { TransformComponent } from 'echarts/components';
 import { use } from 'echarts/core';
 import { LabelLayout, UniversalTransition } from 'echarts/features';
 import { EChartsType } from 'echarts/types/dist/shared';
-import { ForwardedRef, forwardRef, Fragment, PropsWithChildren, useCallback, useMemo } from 'react';
+import { ForwardedRef, forwardRef, Fragment, PropsWithChildren, useMemo } from 'react';
+import { Once } from '../../components/controls';
 import EChartsx, { EChartsInitOptions } from '../../components/EChartsx';
+import { Axis, Dataset, Grid, LineSeries, Tooltip } from '../../components/option';
+import { TypedKey } from '../sort-bar/hook';
 
 export interface RankChartProps<T> extends EChartsInitOptions {
   data: T[];
@@ -20,19 +20,24 @@ export interface RankChartProps<T> extends EChartsInitOptions {
 
 use([TransformComponent, LabelLayout, UniversalTransition]);
 
-function RankChart<T>({ data, fields, children, ...opts }: PropsWithChildren<RankChartProps<T>>, ref: ForwardedRef<EChartsType>) {
+function RankChart<T>({
+  data,
+  fields,
+  children,
+  ...opts
+}: PropsWithChildren<RankChartProps<T>>, ref: ForwardedRef<EChartsType>) {
   const repos = useMemo(() => {
-    const set = new Set<string>()
+    const set = new Set<string>();
     data.forEach((item) => {
       set.add(item[fields.name] as any);
-    })
-    return [...set]
+    });
+    return [...set];
   }, [data, fields.name]);
 
   return (
     <EChartsx init={{ renderer: 'canvas', ...opts }} ref={ref} defaults={{
       animationDuration: 3000,
-      animationDurationUpdate :3000
+      animationDurationUpdate: 3000,
     }}>
       <Once>
         <Grid containLabel top={64} />
@@ -47,7 +52,8 @@ function RankChart<T>({ data, fields, children, ...opts }: PropsWithChildren<Ran
       <Once dependencies={repos}>
         {repos.map((repo) => (
           <Fragment key={repo}>
-            <Dataset id={repo} fromDatasetId='original' transform={{ type: 'filter', config: { value: repo, dimension: fields.name } }} />
+            <Dataset id={repo} fromDatasetId="original"
+                     transform={{ type: 'filter', config: { value: repo, dimension: fields.name } }} />
             <LineSeries name={repo} datasetId={repo} encode={{ x: fields.time, y: fields.rank }} smooth
                         symbolSize={28}
                         lineStyle={{

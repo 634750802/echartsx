@@ -3,9 +3,10 @@ import deepEquals from 'fast-deep-equal/react';
 import { FC, useContext, useEffect, useMemo, useRef } from 'react';
 import { OptionContext } from '../EChartsx';
 
-let id = 0
-function useId () {
-  return useMemo(() => `:${++id}`, [])
+let id = 0;
+
+function useId() {
+  return useMemo(() => `:${++id}`, []);
 }
 
 export function withBaseOption<O extends ComponentOption>(
@@ -13,7 +14,7 @@ export function withBaseOption<O extends ComponentOption>(
   {
     ...defaults
   }: Partial<O> = {},
-  displayName?: string
+  displayName?: string,
 ) {
   const Component: FC<Omit<O, 'mainType'>> = (props) => {
     const { set, remove } = useContext(OptionContext);

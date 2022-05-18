@@ -1,4 +1,4 @@
-import { withBaseOption } from '/src/components/option';
+import { withBaseOption } from '../base';
 import { GridComponent, GridComponentOption } from 'echarts/components';
 import { use } from 'echarts/core';
 
