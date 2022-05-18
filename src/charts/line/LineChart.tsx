@@ -12,6 +12,7 @@ export interface LineChartProps<T> extends EChartsInitOptions {
     time: TypedKey<T, string>
     value: TypedKey<T, number>
   };
+  theme?: string
 }
 
 function useNames<T>(data: T[], nameField: TypedKey<T, string>): string[] {
@@ -26,12 +27,13 @@ function LineChart<T>({
   data,
   fields,
   children,
+  theme,
   ...init
 }: PropsWithChildren<LineChartProps<T>>, ref: ForwardedRef<EChartsType>) {
   const names = useNames(data, fields.name);
 
   return (
-    <EChartsx ref={ref} init={init} debug>
+    <EChartsx ref={ref} init={init} theme={theme}>
       <Once dependencies={names}>
         <Grid containLabel left={8} right={8} top={32} bottom={8} />
         <Axis.Time.X />

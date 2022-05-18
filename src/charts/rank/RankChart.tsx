@@ -16,6 +16,7 @@ export interface RankChartProps<T> extends EChartsInitOptions {
     value: TypedKey<T, number>
     rank: TypedKey<T, number>
   };
+  theme?: string
 }
 
 use([TransformComponent, LabelLayout, UniversalTransition]);
@@ -24,6 +25,7 @@ function RankChart<T>({
   data,
   fields,
   children,
+  theme,
   ...opts
 }: PropsWithChildren<RankChartProps<T>>, ref: ForwardedRef<EChartsType>) {
   const repos = useMemo(() => {
@@ -35,7 +37,7 @@ function RankChart<T>({
   }, [data, fields.name]);
 
   return (
-    <EChartsx init={{ renderer: 'canvas', ...opts }} ref={ref} defaults={{
+    <EChartsx theme={theme} init={{ renderer: 'canvas', ...opts }} ref={ref} defaults={{
       animationDuration: 3000,
       animationDurationUpdate: 3000,
     }}>

@@ -74,16 +74,20 @@ export function useRealtime<T, nameKey extends TypedKey<T, string>, timeKey exte
   }, [grouped, sortedTimes]);
 
   useEffect(() => {
+    currentIndex.current = 0;
     multer();
-    onStart?.()
+    onStart?.();
     const h = setInterval(() => {
       if (!multer()) {
-        onStop?.()
+        onStop?.();
         clearInterval(h);
       }
     }, interval);
 
-    return () => clearInterval(h);
+    return () => {
+      onStop?.();
+      clearInterval(h);
+    };
   }, [data, sortedNames, sortedTimes, interval]);
 
   return { part, sortedNames, sortedTimes, time: currentTime.current };

@@ -25,6 +25,7 @@ export interface SortingBarChartProps<T, nameKey extends TypedKey<T, string>, ti
     value: string & keyof T
   };
   formatTime?: (date: unknown) => string;
+  theme?: string;
 }
 
 function SortingBarChart<T, nameKey extends TypedKey<T, string>, timeKey extends TypedKey<T, string>>({
@@ -33,6 +34,7 @@ function SortingBarChart<T, nameKey extends TypedKey<T, string>, timeKey extends
   data,
   interval,
   children,
+  theme,
   ...opts
 }: PropsWithChildren<SortingBarChartProps<T, nameKey, timeKey>>, forwardedRef: ForwardedRef<EChartsType>) {
   const { ref, recording, download, start, stop } = withEChartsRecorder(forwardedRef);
@@ -62,6 +64,7 @@ function SortingBarChart<T, nameKey extends TypedKey<T, string>, timeKey extends
 
   return (
     <EChartsx
+      theme={theme}
       init={{ renderer: 'canvas', ...opts }}
       defaults={{
         animationDuration: 0,
