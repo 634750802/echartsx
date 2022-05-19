@@ -16,14 +16,12 @@ import {
 } from '../../components/option';
 import { EChartsInitOptions, EChartsx, If, Once } from '../../index';
 import { withEChartsRecorder } from '../../utils/useEChartsRecorder';
-import { TypedKey, useRealtime, UseRealtimeOptions } from './hook';
+import RealtimeSeries from './DynamicSeries';
+import { TypedKey, UseRealtimeOptions } from './hook';
 
 use([TransformComponent, LabelLayout, UniversalTransition]);
 
 export interface SortingBarChartProps<T, nameKey extends TypedKey<T, string>, timeKey extends TypedKey<T, string>> extends Omit<UseRealtimeOptions<T, nameKey, timeKey>, 'onStart' | 'onStop'>, EChartsInitOptions {
-  fields: UseRealtimeOptions<T, nameKey, timeKey>['fields'] & {
-    value: string & keyof T
-  };
   formatTime?: (date: unknown) => string;
   theme?: string;
 }
@@ -39,13 +37,6 @@ function SortingBarChart<T, nameKey extends TypedKey<T, string>, timeKey extends
 }: PropsWithChildren<SortingBarChartProps<T, nameKey, timeKey>>, forwardedRef: ForwardedRef<EChartsType>) {
   const { ref, recording, download, start, stop } = withEChartsRecorder(forwardedRef);
 
-  const { part: source, sortedNames, time } = useRealtime<T, nameKey, timeKey>({
-    fields,
-    data,
-    interval,
-    onStart: start,
-    onStop: stop,
-  });
   const { max, min } = useMemo(() => {
     return data.reduce((old, current) => {
       if ((current[fields.time] as unknown as string) > old.max) {
@@ -74,7 +65,7 @@ function SortingBarChart<T, nameKey extends TypedKey<T, string>, timeKey extends
       }}
       ref={ref}
     >
-      <Once dependencies={[min, max, sortedNames]}>
+      <Once dependencies={[min, max]}>
         <Grid containLabel left={8} top={32} bottom={48} right={48} />
         <Legend type="scroll" orient="horizontal" />
         <Axis.Value.X max="dataMax" axisLabel={{ showMaxLabel: false }} position="top" />
@@ -84,35 +75,31 @@ function SortingBarChart<T, nameKey extends TypedKey<T, string>, timeKey extends
         <SingleAxis type="time" min={min} max={max} bottom="24" axisLabel={{ inside: true }} axisTick={{ show: false }}
                     height="0" tooltip={{ show: false }} />
       </Once>
-      <Once dependencies={sortedNames}>
-        <Axis.Category.Y animationDurationUpdate={interval}
-                         animationDuration={interval / 3}
-                         animationEasing="linear"
-                         animationEasingUpdate="linear"
-                         data={sortedNames as unknown[] as string[]} inverse max={10} />
+      <Once dependencies={[timeLabelFormatter, fields.name, fields.value]}>
+        <ScatterSeries
+          id="time"
+          coordinateSystem="singleAxis"
+          symbolSize={6}
+          symbolOffset={3}
+          symbolRotate={180}
+          symbol="path://M,90,0,H,0,l,45,90,L,90,0,z"
+          label={{ show: true, position: 'bottom', formatter: timeLabelFormatter }}
+          emphasis={{ disabled: true }}
+        />
+        <BarSeries
+          id="bars"
+          encode={{ x: fields.value, y: fields.name }}
+          realtimeSort
+          colorBy="data"
+          label={{
+            show: true,
+            position: 'right',
+            valueAnimation: true,
+          }}
+        />
       </Once>
       <If cond={!recording} once then={() => <Toolbox feature={{ myDownload: myDownload(download) }} />} />
-      <ScatterSeries
-        coordinateSystem="singleAxis"
-        data={[{ value: time as unknown as string, id: 'time' }]}
-        symbolSize={6}
-        symbolOffset={3}
-        symbolRotate={180}
-        symbol="path://M,90,0,H,0,l,45,90,L,90,0,z"
-        label={{ show: true, position: 'bottom', formatter: timeLabelFormatter }}
-        emphasis={{ disabled: true }}
-      />
-      <BarSeries
-        data={sortedNames.map(name => source[name as unknown as string]?.[fields.value] ?? 0)}
-        encode={{ x: fields.value, y: fields.name }}
-        realtimeSort
-        colorBy="data"
-        label={{
-          show: true,
-          position: 'right',
-          valueAnimation: true,
-        }}
-      />
+      <RealtimeSeries interval={interval} fields={fields} data={data} onStart={start} onStop={stop} />
       {children}
     </EChartsx>
   );

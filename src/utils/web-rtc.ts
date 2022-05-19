@@ -43,6 +43,7 @@ export function useWebRTCRecorder() {
   const canvasRef = useRef<HTMLCanvasElement>()
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
   const [recording, setRecording] = useState(false);
+  const shouldStart = useRef(false)
 
   const ref = useCallback((canvas: HTMLCanvasElement | null) => {
     canvasRef.current = canvas ?? undefined
@@ -50,6 +51,9 @@ export function useWebRTCRecorder() {
     if (canvas) {
       streamRef.current = canvas.captureStream();
       console.log('Started stream capture from canvas element: ', streamRef.current);
+      if (shouldStart.current) {
+        start()
+      }
     }
   }, []);
 
@@ -64,8 +68,9 @@ export function useWebRTCRecorder() {
   }
 
   const start = useCallback(() => {
+    shouldStart.current = true
     const canvas = canvasRef.current
-    if (!canvas) {
+    if (!canvas || mediaRecorderRef.current) {
       return;
     }
 
@@ -74,7 +79,7 @@ export function useWebRTCRecorder() {
       videoBitsPerSecond: 3500000
     };
     recordedBlobsRef.current = [];
-    let mediaRecorder: MediaRecorder = new MediaRecorder(streamRef.current!, options);
+    let mediaRecorder: MediaRecorder = mediaRecorderRef.current = new MediaRecorder(streamRef.current!, options);
     mediaRecorder.onstop = event => {
       console.log('Recorder stopped: ', event);
       setRecording(false);
@@ -88,11 +93,11 @@ export function useWebRTCRecorder() {
       }
     }
     mediaRecorder.start(250); // collect 100ms of data
-    mediaRecorderRef.current = mediaRecorder;
     console.log('MediaRecorder started', mediaRecorder);
   }, []);
 
   const stop = useCallback(() => {
+    shouldStart.current = false
     const canvas = canvasRef.current
     if (!canvas || !mediaRecorderRef.current) {
       return;
@@ -128,6 +133,7 @@ export function useWebRTCRecorder() {
     }
 
     return () => {
+      console.log('clear canvas')
       stop();
       canvasRef.current = undefined;
       mediaRecorderRef.current = undefined;

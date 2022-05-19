@@ -80,10 +80,13 @@ function addComponent(option: EChartsOption, item: EChartsComponentOption) {
 }
 
 export const OptionContext = createContext<{
+  setOption(option: EChartsOption): void
   set(id: string, component: EChartsComponentOption): void
   remove(id: string): void
   markNoMerge(): void
 }>({
+  setOption() {
+  },
   set() {
   },
   markNoMerge() {
@@ -120,6 +123,8 @@ function EChartsx({
   const shouldFullReload = useRef(true);
   const changingKeys = useRef<Record<string, boolean>>({});
   const forwarded = useRef(false);
+  const isBasicOptionsSet = useRef(false)
+  const initialOptions = useRef<EChartsOption[]>([])
 
   const set = useCallback((id: string, component: EChartsComponentOption) => {
     if (deepEqual(options[id], component)) {
@@ -154,7 +159,7 @@ function EChartsx({
     };
 
     if (ref.current) {
-      echartsInstanceRef.current = init(ref.current, theme, { devicePixelRatio: getDevicePixelRatio(), ...initProp });
+      const ec = echartsInstanceRef.current = init(ref.current, theme, { devicePixelRatio: getDevicePixelRatio(), ...initProp });
       forwarded.current = false;
       return dispose;
     } else {
@@ -170,7 +175,16 @@ function EChartsx({
       if (debug) {
         console.debug('echartsx.set', option);
       }
-      echartsInstanceRef.current?.setOption(option, shouldFullReload.current);
+      const ec = echartsInstanceRef.current;
+      if (ec) {
+        ec.setOption(option, shouldFullReload.current);
+        // set cached options after first options set
+        isBasicOptionsSet.current = true
+        if (initialOptions.current.length > 0) {
+          initialOptions.current.forEach(option => ec.setOption(option))
+          initialOptions.current = []
+        }
+      }
       if (!forwarded.current) {
         applyRef(forwardedRef, echartsInstanceRef.current);
         forwarded.current = true;
@@ -180,8 +194,19 @@ function EChartsx({
     changingKeys.current = {};
   }, [defaults, version]);
 
+  // some option may be popped before echarts instance initialized, we cache those options and set
+  // after echarts instance init
+  const setOption = useCallback((option: EChartsOption) => {
+    const ec = echartsInstanceRef.current
+    if (ec && isBasicOptionsSet.current) {
+      ec.setOption(option)
+    } else {
+      initialOptions.current.push(option)
+    }
+  }, [])
+
   return (
-    <OptionContext.Provider value={{ set, markNoMerge, remove }}>
+    <OptionContext.Provider value={{ set, markNoMerge, remove, setOption }}>
       <div ref={ref} {...props} />
       {children}
     </OptionContext.Provider>

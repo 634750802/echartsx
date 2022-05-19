@@ -5,6 +5,7 @@ export interface UseRealtimeOptions<T, nameKey extends TypedKey<T, string>, time
   fields: {
     time: timeKey
     name: nameKey
+    value: string & keyof T
   };
   interval: number;
   onStart?: () => void;
@@ -24,8 +25,7 @@ export function useRealtime<T, nameKey extends TypedKey<T, string>, timeKey exte
   interval,
   onStart,
   onStop,
-}: UseRealtimeOptions<T, nameKey, timeKey>) {
-  const [part, setPart] = useState<Record<string, T>>({} as Record<string, T>);
+}: UseRealtimeOptions<T, nameKey, timeKey>, tick: (part: Record<string, T>, time: T[timeKey], sortedNames: T[nameKey][]) => void) {
   const currentTime = useRef<T[timeKey]>();
   const currentIndex = useRef(0);
 
@@ -68,8 +68,8 @@ export function useRealtime<T, nameKey extends TypedKey<T, string>, timeKey exte
       map[item[nameField] as unknown as string] = item;
       return map;
     }, {} as Record<string, T>);
-    setPart(part ?? {});
     currentIndex.current += 1;
+    tick(part || {}, currentTime.current, sortedNames)
     return currentIndex.current < sortedTimes.length;
   }, [grouped, sortedTimes]);
 
@@ -90,5 +90,5 @@ export function useRealtime<T, nameKey extends TypedKey<T, string>, timeKey exte
     };
   }, [data, sortedNames, sortedTimes, interval]);
 
-  return { part, sortedNames, sortedTimes, time: currentTime.current };
+  return { sortedNames, sortedTimes };
 }
