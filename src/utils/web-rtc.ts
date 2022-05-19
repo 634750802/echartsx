@@ -20,14 +20,14 @@ function useSupportedType () {
     }
 
     const types = [
+      "video/mp4",
+      "video/webm\;codecs=h264",
       "video/webm",
       'video/webm,codecs=vp9',
       'video/vp8',
       "video/webm\;codecs=vp8",
       "video/webm\;codecs=daala",
-      "video/webm\;codecs=h264",
       "video/mpeg",
-      "video/mp4"
     ];
 
     for (let i in types) {
