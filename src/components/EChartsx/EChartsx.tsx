@@ -150,6 +150,16 @@ function EChartsx({
   }, []);
 
   useLayoutEffect(() => {
+    const resize = () => {
+      echartsInstanceRef.current?.resize()
+    }
+    window.addEventListener('resize', resize)
+    return () => {
+      window.removeEventListener('resize', resize)
+    }
+  }, [])
+
+  useLayoutEffect(() => {
     const dispose = () => {
       if (echartsInstanceRef.current) {
         echartsInstanceRef.current.dispose();
