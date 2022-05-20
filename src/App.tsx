@@ -23,7 +23,7 @@ function App() {
       <LineChart height={360} width={480} fields={{ name: 'repo_name', time: 'event_month', value: 'total'  }} data={sortData} >
         <Title text='title' textAlign='center' left='50%' />
       </LineChart>
-      <SortingBarChart height={360} width={480} fields={{ name: 'repo_name', time: 'event_month', value: 'total' }} data={sortData}
+      <SortingBarChart height={480} width={1200} fields={{ name: 'repo_name', time: 'event_month', value: 'total' }} data={sortData}
                        interval={400} formatTime={format} >
         <Title text='title' textAlign='center' left='50%' />
       </SortingBarChart>
