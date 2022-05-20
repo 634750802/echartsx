@@ -41,7 +41,7 @@ function LineChart<T>({
   return (
     <EChartsx ref={ref} init={init} theme={theme}>
       <Once dependencies={names}>
-        <Grid containLabel left={8} right={8} top={32} bottom={8} />
+        <Grid containLabel left={8} right={8} top={48} bottom={8} />
         <Axis.Time.X axisPointer={{ label: { formatter: timeLabelFormatter }}}/>
         <Axis.Value.Y />
         <Tooltip trigger="axis" axisPointer={{ type: 'cross' }} renderMode="html" confine formatter={((params: any[]) => {

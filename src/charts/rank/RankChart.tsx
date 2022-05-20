@@ -42,7 +42,7 @@ function RankChart<T>({
       animationDurationUpdate: 3000,
     }}>
       <Once>
-        <Grid containLabel top={64} left={24} right={108} />
+        <Grid containLabel top={72} left={24} right={108} />
         <Axis.Value.Y interval={1} min={1} inverse offset={16} axisPointer={{ show: true, type: 'shadow', snap: true, label: { precision: 0 }, triggerTooltip: false }} />
         <Axis.Time.X axisLabel={{ formatter: (p: string | number) => String(p), showMaxLabel: true }} minInterval={1}
                      maxInterval={1}
