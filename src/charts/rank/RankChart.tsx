@@ -42,12 +42,13 @@ function RankChart<T>({
       animationDurationUpdate: 3000,
     }}>
       <Once>
-        <Grid containLabel top={64} />
-        <Axis.Value.Y minInterval={1} min={1} inverse show={false} />
+        <Grid containLabel top={64} left={24} right={108} />
+        <Axis.Value.Y interval={1} min={1} inverse offset={16} axisPointer={{ show: true, type: 'shadow', snap: true, label: { precision: 0 }, triggerTooltip: false }} />
         <Axis.Time.X axisLabel={{ formatter: (p: string | number) => String(p), showMaxLabel: true }} minInterval={1}
                      maxInterval={1}
                      position="top" splitLine={{ show: true }} offset={28} axisLine={{ show: false }}
                      axisTick={{ show: false }}
+                     axisPointer={{ show: true, type: 'line', snap: true, label: { formatter: ({ value }) => String(value) }, triggerTooltip: false }}
         />
         <Tooltip trigger="item" />
       </Once>
@@ -65,6 +66,8 @@ function RankChart<T>({
                           show: true,
                           formatter: repo,
                           offset: [12, 0],
+                          overflow: 'break',
+                          width: 96,
                         }}
                         label={{
                           show: true,
@@ -75,6 +78,9 @@ function RankChart<T>({
                           fontSize: 8,
                         }}
                         emphasis={{ focus: 'series', label: { fontSize: 10 } }}
+                        tooltip={{
+                          formatter: '{a}'
+                        }}
             />
           </Fragment>
         ))}

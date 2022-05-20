@@ -36,7 +36,12 @@ export default function DynamicSeries<T, nameKey extends TypedKey<T, string>, ti
                          animationDuration={interval / 3}
                          animationEasing="linear"
                          animationEasingUpdate="linear"
-                         data={sortedNames as unknown[] as string[]} inverse max={10} />
+                         data={sortedNames as unknown[] as string[]} inverse max={10}
+                         axisLabel={{
+                           width: 96,
+
+                         }}
+        />
       </Once>
     </>
   )
