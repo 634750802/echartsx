@@ -23,11 +23,11 @@ function App() {
       <LineChart height={360} width={480} fields={{ name: 'repo_name', time: 'event_month', value: 'total'  }} data={sortData} formatTime={format} >
         <Title text='title' textAlign='center' left='50%' />
       </LineChart>
-      <SortingBarChart height={480} width={1200} fields={{ name: 'repo_name', time: 'event_month', value: 'total' }} data={sortData}
-                       interval={400} formatTime={format} >
+      <SortingBarChart height={15 * 36 + 128} width={1200} fields={{ name: 'repo_name', time: 'event_month', value: 'total' }} data={sortData}
+                       interval={400} formatTime={format} max={15} >
         <Title text='title' textAlign='center' left='50%' />
       </SortingBarChart>
-      <RankChart height={1200} data={rankData} fields={{ name: 'repo_name', time: 'event_year', value: 'total', rank: 'rank' }} >
+      <RankChart height={30 * 36 + 128} data={rankData} fields={{ name: 'repo_name', time: 'event_year', value: 'total', rank: 'rank' }} >
         <Title text='title' textAlign='center' left='50%' />
       </RankChart>
     </div>

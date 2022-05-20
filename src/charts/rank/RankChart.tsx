@@ -58,24 +58,32 @@ function RankChart<T>({
             <Dataset id={repo} fromDatasetId="original"
                      transform={{ type: 'filter', config: { value: repo, dimension: fields.name } }} />
             <LineSeries name={repo} datasetId={repo} encode={{ x: fields.time, y: fields.rank }} smooth
-                        symbolSize={28}
                         lineStyle={{
                           width: 3,
                         }}
+                        symbolSize={8}
+                        symbol='circle'
                         endLabel={{
                           show: true,
-                          formatter: repo,
                           offset: [12, 0],
-                          overflow: 'break',
                           width: 96,
-                        }}
-                        label={{
-                          show: true,
-                          position: 'inside',
-                          formatter: p => {
-                            return String((p.value as T)[fields.value]);
+                          fontSize: 14,
+                          overflow: 'truncate',
+                          formatter: (param) => {
+                            const fullName = param.seriesName as string
+                            const [owner, name] = fullName.split('/')
+                            if (owner === name) {
+                              return name
+                            } else {
+                              return `{owner|${owner}/}\n${name}`
+                            }
                           },
-                          fontSize: 8,
+                          rich: {
+                            owner: {
+                              fontSize: 12,
+                              color: 'gray'
+                            }
+                          }
                         }}
                         emphasis={{ focus: 'series', label: { fontSize: 10 } }}
                         tooltip={{

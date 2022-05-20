@@ -10,8 +10,9 @@ export default function DynamicSeries<T, nameKey extends TypedKey<T, string>, ti
   interval,
   fields,
   onStart,
-  onStop
-}: UseRealtimeOptions<T, nameKey, timeKey>) {
+  onStop,
+  max,
+}: UseRealtimeOptions<T, nameKey, timeKey> & { max: number }) {
   const { setOption } = useContext(OptionContext)
 
   const { sortedNames } = useRealtime<T, nameKey, timeKey>({
@@ -36,10 +37,25 @@ export default function DynamicSeries<T, nameKey extends TypedKey<T, string>, ti
                          animationDuration={interval / 3}
                          animationEasing="linear"
                          animationEasingUpdate="linear"
-                         data={sortedNames as unknown[] as string[]} inverse max={10}
+                         data={sortedNames as unknown[] as string[]} inverse max={max}
                          axisLabel={{
                            width: 96,
-
+                           fontSize: 14,
+                           overflow: 'truncate',
+                           formatter: (param: string) => {
+                             const [owner, name] = param.split('/')
+                             if (owner === name) {
+                               return name
+                             } else {
+                               return `{owner|${owner}/}\n${name}`
+                             }
+                           },
+                           rich: {
+                             owner: {
+                               fontSize: 12,
+                               opacity: 0.618
+                             }
+                           }
                          }}
         />
       </Once>

@@ -24,6 +24,7 @@ use([TransformComponent, LabelLayout, UniversalTransition]);
 export interface SortingBarChartProps<T, nameKey extends TypedKey<T, string>, timeKey extends TypedKey<T, string>> extends Omit<UseRealtimeOptions<T, nameKey, timeKey>, 'onStart' | 'onStop'>, EChartsInitOptions {
   formatTime?: (date: unknown) => string;
   theme?: string;
+  max?: number
 }
 
 function SortingBarChart<T, nameKey extends TypedKey<T, string>, timeKey extends TypedKey<T, string>>({
@@ -33,6 +34,7 @@ function SortingBarChart<T, nameKey extends TypedKey<T, string>, timeKey extends
   interval,
   children,
   theme,
+  max: maxCount = 10,
   ...opts
 }: PropsWithChildren<SortingBarChartProps<T, nameKey, timeKey>>, forwardedRef: ForwardedRef<EChartsType>) {
   const { ref, recording, download, start, stop } = withEChartsRecorder(forwardedRef);
@@ -99,7 +101,7 @@ function SortingBarChart<T, nameKey extends TypedKey<T, string>, timeKey extends
         />
       </Once>
       <If cond={!recording} once then={() => <Toolbox feature={{ myDownload: myDownload(download) }} />} />
-      <RealtimeSeries interval={interval} fields={fields} data={data} onStart={start} onStop={stop} />
+      <RealtimeSeries interval={interval} fields={fields} data={data} onStart={start} onStop={stop} max={maxCount} />
       {children}
     </EChartsx>
   );
