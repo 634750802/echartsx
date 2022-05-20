@@ -1,6 +1,6 @@
 {
   "name": "@djagger/echartsx",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "scripts": {
     "dev": "vite",
     "build": "rm -rf dist && tsc -p tsconfig.build.json"
