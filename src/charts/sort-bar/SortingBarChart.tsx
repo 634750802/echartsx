@@ -93,6 +93,7 @@ function SortingBarChart<T, nameKey extends TypedKey<T, string>, timeKey extends
           encode={{ x: fields.value, y: fields.name }}
           realtimeSort
           colorBy="data"
+          barMaxWidth={45}
           label={{
             show: true,
             position: 'right',
