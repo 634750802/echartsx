@@ -68,7 +68,7 @@ function SortingBarChart<T, nameKey extends TypedKey<T, string>, timeKey extends
       ref={ref}
     >
       <Once dependencies={[min, max]}>
-        <Grid containLabel left={8} top={48} bottom={48} right={48} />
+        <Grid containLabel={false} left={96} top={48} bottom={48} right={48} />
         <Legend type="scroll" orient="horizontal" />
         <Axis.Value.X max="dataMax" axisLabel={{ showMaxLabel: false }} position="top" />
         <Tooltip trigger="item" renderMode="html" />
@@ -92,6 +92,7 @@ function SortingBarChart<T, nameKey extends TypedKey<T, string>, timeKey extends
           id="bars"
           encode={{ x: fields.value, y: fields.name }}
           realtimeSort
+          seriesLayoutBy='column'
           colorBy="data"
           barMaxWidth={45}
           label={{

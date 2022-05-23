@@ -44,13 +44,12 @@ export function useWebRTCRecorder() {
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
   const [recording, setRecording] = useState(false);
   const shouldStart = useRef(false)
-  const intervalHandler = useRef<ReturnType<typeof setInterval>>()
 
   const ref = useCallback((canvas: HTMLCanvasElement | null) => {
     canvasRef.current = canvas ?? undefined
     setCanvas(canvas);
     if (canvas) {
-      streamRef.current = canvas.captureStream();
+      streamRef.current = canvas.captureStream(100);
       console.log('Started stream capture from canvas element: ', streamRef.current);
       if (shouldStart.current) {
         start()
@@ -94,13 +93,8 @@ export function useWebRTCRecorder() {
         recordedBlobsRef.current!.push(event.data);
       }
     }
-    mediaRecorder.start();
+    mediaRecorder.start(5000);
     console.log('MediaRecorder started', mediaRecorder);
-    const track: CanvasCaptureMediaStreamTrack = stream.getVideoTracks()[0] as CanvasCaptureMediaStreamTrack
-    intervalHandler.current = setInterval(() => {
-      track.requestFrame()
-      mediaRecorder.requestData()
-    }, 100)
   }, []);
 
   const stop = useCallback(() => {
@@ -113,8 +107,6 @@ export function useWebRTCRecorder() {
     if (mediaRecorderRef.current?.state !== 'inactive') {
       mediaRecorderRef.current?.stop();
     }
-    clearInterval(intervalHandler.current)
-    intervalHandler.current = undefined
   }, []);
 
   const download = useCallback(() => {
