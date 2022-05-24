@@ -55,8 +55,12 @@ function RankChart<T>({
       <Once dependencies={repos}>
         {repos.map((repo) => (
           <Fragment key={repo}>
-            <Dataset id={repo} fromDatasetId="original"
-                     transform={{ type: 'filter', config: { value: repo, dimension: fields.name } }} />
+            <Dataset id={repo}
+                     fromDatasetId="original"
+                     transform={[
+                       { type: 'filter', config: { value: repo, dimension: fields.name } },
+                       { type: 'sort', config: { dimension: fields.time, order: 'asc' } }
+                     ]} />
             <LineSeries name={repo} datasetId={repo} encode={{ x: fields.time, y: fields.rank }} smooth
                         lineStyle={{
                           width: 3,
