@@ -11,6 +11,7 @@ import {
   myDownload,
   ScatterSeries,
   SingleAxis,
+  Title,
   Toolbox,
   Tooltip,
 } from '../../components/option';
@@ -74,8 +75,10 @@ function SortingBarChart<T, nameKey extends TypedKey<T, string>, timeKey extends
         <Tooltip trigger="item" renderMode="html" />
       </Once>
       <Once dependencies={[min, max]}>
-        <SingleAxis type="time" min={min} max={max} bottom="24" axisLabel={{ inside: true }} axisTick={{ show: false }}
-                    height="0" tooltip={{ show: false }} />
+        <SingleAxis type="time" min={min} max={max} bottom="24" axisLabel={{ show: false }} axisTick={{ show: false }}
+                    height="0" tooltip={{ show: false }} left={80} right={80} />
+        <Title id='min' text={formatTime?.(min)} textStyle={{ fontSize: 12, fontWeight: 'bold' }} left={8} bottom={12}/>
+        <Title id='max' text={formatTime?.(max)} textStyle={{ fontSize: 12, fontWeight: 'bold' }} right={8} bottom={12}/>
       </Once>
       <Once dependencies={[timeLabelFormatter, fields.name, fields.value]}>
         <ScatterSeries
