@@ -33,8 +33,10 @@ export default function DynamicSeries<T, nameKey extends TypedKey<T, string>, ti
   return (
     <>
       <Once dependencies={sortedNames}>
-        <Axis.Category.Y animationDurationUpdate={interval / 3}
-                         animationDuration={interval / 3}
+        <Axis.Category.Y animationDurationUpdate={interval}
+                         animationDuration={interval}
+                         animationEasing='exponentialIn'
+                         animationEasingUpdate='exponentialOut'
                          data={sortedNames as unknown[] as string[]} inverse max={Math.min(max, sortedNames.length) - 1}
                          axisLabel={{
                            fontSize: 14,

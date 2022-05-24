@@ -49,7 +49,7 @@ export function useWebRTCRecorder() {
     canvasRef.current = canvas ?? undefined
     setCanvas(canvas);
     if (canvas) {
-      streamRef.current = canvas.captureStream(100);
+      streamRef.current = canvas.captureStream(24);
       console.log('Started stream capture from canvas element: ', streamRef.current);
       if (shouldStart.current) {
         start()
@@ -77,7 +77,7 @@ export function useWebRTCRecorder() {
 
     let options = {
       mimeType: supportedType,
-      videoBitsPerSecond: 3500000
+      videoBitsPerSecond: 40000000
     };
     recordedBlobsRef.current = [];
     let mediaRecorder: MediaRecorder = mediaRecorderRef.current = new MediaRecorder(streamRef.current!, options);

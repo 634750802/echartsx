@@ -3,6 +3,7 @@ import { use } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import rankData from './rank-data.json';
 import sortData from './sort-data.json';
+import { useFPS } from './utils/useFPS';
 
 const dft = new Intl.DateTimeFormat(['en-US'], {
   month: 'short',
@@ -18,8 +19,12 @@ const format = (val: unknown): string => {
 use(CanvasRenderer);
 
 function App() {
+  const fps = useFPS(1000)
   return (
     <div className="App">
+      <p>
+        {fps}
+      </p>
       <LineChart height={360} width={480} fields={{ name: 'repo_name', time: 'event_month', value: 'total'  }} data={sortData} formatTime={format} >
         <Title text='title' textAlign='center' left='50%' />
       </LineChart>
