@@ -39,7 +39,7 @@ function useSupportedType () {
 
 }
 
-export function useWebRTCRecorder() {
+export function useWebRTCRecorder(filename: string) {
   const canvasRef = useRef<HTMLCanvasElement>()
   const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
   const [recording, setRecording] = useState(false);
@@ -119,14 +119,14 @@ export function useWebRTCRecorder() {
     const a = document.createElement('a');
     a.style.display = 'none';
     a.href = url;
-    a.download = 'test.' + /\w+\/(\w+)/.exec(supportedType || '')?.[1];
+    a.download = filename + '.' + /\w+\/(\w+)/.exec(supportedType || '')?.[1];
     document.body.appendChild(a);
     a.click();
     setTimeout(() => {
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
     }, 100);
-  }, []);
+  }, [filename]);
 
   useLayoutEffect(() => {
     if (!canvas) {

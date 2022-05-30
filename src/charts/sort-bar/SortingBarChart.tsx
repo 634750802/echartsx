@@ -16,7 +16,7 @@ import {
   Tooltip,
 } from '../../components/option';
 import { EChartsInitOptions, EChartsx, If, Once } from '../../index';
-import { withEChartsRecorder } from '../../utils/useEChartsRecorder';
+import { useEChartsRecorder } from '../../utils/useEChartsRecorder';
 import RealtimeSeries from './DynamicSeries';
 import { TypedKey, UseRealtimeOptions } from './hook';
 
@@ -25,7 +25,8 @@ use([TransformComponent, LabelLayout, UniversalTransition]);
 export interface SortingBarChartProps<T, nameKey extends TypedKey<T, string>, timeKey extends TypedKey<T, string>> extends Omit<UseRealtimeOptions<T, nameKey, timeKey>, 'onStart' | 'onStop'>, EChartsInitOptions {
   formatTime?: (date: unknown) => string;
   theme?: string;
-  max?: number
+  max?: number;
+  filename?: string;
 }
 
 function SortingBarChart<T, nameKey extends TypedKey<T, string>, timeKey extends TypedKey<T, string>>({
@@ -36,9 +37,10 @@ function SortingBarChart<T, nameKey extends TypedKey<T, string>, timeKey extends
   children,
   theme,
   max: maxCount = 10,
+  filename = 'chart',
   ...opts
 }: PropsWithChildren<SortingBarChartProps<T, nameKey, timeKey>>, forwardedRef: ForwardedRef<EChartsType>) {
-  const { ref, recording, download, start, stop } = withEChartsRecorder(forwardedRef);
+  const { ref, recording, download, start, stop } = useEChartsRecorder(forwardedRef, filename);
 
   const { max, min } = useMemo(() => {
     return data.reduce((old, current) => {
