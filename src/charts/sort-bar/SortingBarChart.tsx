@@ -51,7 +51,7 @@ function SortingBarChart<T, nameKey extends TypedKey<T, string>, timeKey extends
         old.min = current[fields.time] as unknown as string;
       }
       return old;
-    }, { max: '', min: 'zzzzzzzzzzzzzzzzzzzzzzz' });
+    }, { max: data[0]?.[fields.time] as unknown as string, min: data[0]?.[fields.time] as unknown as string });
   }, [data]);
 
   const timeLabelFormatter = useCallback((p: CallbackDataParams) => {
