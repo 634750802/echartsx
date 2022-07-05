@@ -178,6 +178,10 @@ function EChartsx({
   }, []);
 
   useEffect(() => {
+    echartsInstanceRef.current?.resize({ width: initProp?.width, height: initProp?.height })
+  }, [initProp?.width, initProp?.height])
+
+  useEffect(() => {
     const option: EChartsOption = shouldFullReload.current ? { ...defaults } : {};
     (shouldFullReload.current ? Object.values(options) : Object.keys(changingKeys.current).map(key => options[key]))
       .forEach(component => addComponent(option, component));
