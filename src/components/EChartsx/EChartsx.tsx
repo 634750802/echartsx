@@ -149,17 +149,27 @@ function EChartsx({
     shouldFullReload.current = true;
   }, []);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const resize = () => {
       echartsInstanceRef.current?.resize()
     }
-    window.addEventListener('resize', resize)
-    return () => {
-      window.removeEventListener('resize', resize)
+    if (typeof ResizeObserver !== 'undefined') {
+      const ro = new ResizeObserver(resize);
+      if (ref.current) {
+        ro.observe(ref.current);
+      }
+      return () => {
+        ro.disconnect();
+      };
+    } else {
+      window.addEventListener('resize', resize);
+      return () => {
+        window.removeEventListener('resize', resize);
+      };
     }
   }, [])
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const dispose = () => {
       if (echartsInstanceRef.current) {
         echartsInstanceRef.current.dispose();
@@ -177,8 +187,8 @@ function EChartsx({
     }
   }, []);
 
-  useEffect(() => {
-    echartsInstanceRef.current?.resize({ width: initProp?.width, height: initProp?.height })
+  useLayoutEffect(() => {
+    echartsInstanceRef.current?.resize({ width: initProp?.width ?? 'auto', height: initProp?.height ?? 'auto' })
   }, [initProp?.width, initProp?.height])
 
   useEffect(() => {
