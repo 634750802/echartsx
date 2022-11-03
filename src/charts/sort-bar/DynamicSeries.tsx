@@ -1,7 +1,7 @@
 import { EChartsOption } from 'echarts/types/dist/shared';
 import { useContext } from 'react';
 import { Once } from '../../components/controls';
-import { OptionContext } from '../../components/EChartsx';
+import OptionContext from '../../components/EChartsx/OptionContext';
 import { Axis } from '../../components/option';
 import { TypedKey, useRealtime, UseRealtimeOptions } from './hook';
 

@@ -1,6 +1,3 @@
-import { TransformComponent } from 'echarts/components';
-import { use } from 'echarts/core';
-import { LabelLayout, UniversalTransition } from 'echarts/features';
 import { CallbackDataParams, EChartsType } from 'echarts/types/dist/shared';
 import { ForwardedRef, forwardRef, PropsWithChildren, useCallback, useMemo } from 'react';
 import {
@@ -19,8 +16,6 @@ import { EChartsInitOptions, EChartsx, If, Once } from '../../index';
 import { useEChartsRecorder } from '../../utils/useEChartsRecorder';
 import RealtimeSeries from './DynamicSeries';
 import { TypedKey, UseRealtimeOptions } from './hook';
-
-use([TransformComponent, LabelLayout, UniversalTransition]);
 
 export interface SortingBarChartProps<T, nameKey extends TypedKey<T, string>, timeKey extends TypedKey<T, string>> extends Omit<UseRealtimeOptions<T, nameKey, timeKey>, 'onStart' | 'onStop'>, EChartsInitOptions {
   formatTime?: (date: unknown) => string;

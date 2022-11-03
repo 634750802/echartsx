@@ -1,7 +1,4 @@
-import { TitleComponent, TitleComponentOption } from 'echarts/components';
-import { use } from 'echarts/core';
+import { TitleComponentOption } from 'echarts/components';
 import { withBaseOption } from '../base';
-
-use(TitleComponent);
 
 export const Title = withBaseOption<TitleComponentOption>('title', {}, 'Title');

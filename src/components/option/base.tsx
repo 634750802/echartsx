@@ -1,7 +1,7 @@
 import { ComponentOption } from 'echarts/types/src/util/types';
 import deepEquals from 'fast-deep-equal/react';
 import { FC, useContext, useEffect, useMemo, useRef } from 'react';
-import { OptionContext } from '../EChartsx';
+import OptionContext from '../EChartsx/OptionContext';
 
 let id = 0;
 

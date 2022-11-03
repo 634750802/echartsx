@@ -4,7 +4,6 @@ import { LocaleOption } from 'echarts/types/src/core/locale';
 import { ComponentOption as EChartsComponentOption, RendererType } from 'echarts/types/src/util/types';
 import deepEqual from 'fast-deep-equal/react';
 import {
-  createContext,
   ForwardedRef,
   forwardRef,
   HTMLAttributes,
@@ -16,6 +15,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import OptionContext from './OptionContext';
 import { getDevicePixelRatio } from './utils';
 
 
@@ -78,24 +78,6 @@ function addComponent(option: EChartsOption, item: EChartsComponentOption) {
     option[item.mainType] = item;
   }
 }
-
-export const OptionContext = createContext<{
-  setOption(option: EChartsOption): void
-  set(id: string, component: EChartsComponentOption): void
-  remove(id: string): void
-  markNoMerge(): void
-}>({
-  setOption() {
-  },
-  set() {
-  },
-  markNoMerge() {
-  },
-  remove() {
-  },
-});
-
-OptionContext.displayName = 'EChartsxContext';
 
 
 function applyRef<T>(ref: ForwardedRef<T>, value: T) {

@@ -1,8 +1,6 @@
-import { TooltipComponent, TooltipComponentOption } from 'echarts/components';
-import { use } from 'echarts/core';
+import { TooltipComponentOption } from 'echarts/components';
 import { withBaseOption } from '../base';
 
-use(TooltipComponent);
 const Tooltip = withBaseOption<TooltipComponentOption>(
   'tooltip',
   {},

@@ -1,6 +1,3 @@
-import { TransformComponent } from 'echarts/components';
-import { use } from 'echarts/core';
-import { LabelLayout, UniversalTransition } from 'echarts/features';
 import { EChartsType } from 'echarts/types/dist/shared';
 import { ForwardedRef, forwardRef, Fragment, PropsWithChildren, useMemo } from 'react';
 import { Once } from '../../components/controls';
@@ -19,7 +16,6 @@ export interface RankChartProps<T> extends EChartsInitOptions {
   theme?: string
 }
 
-use([TransformComponent, LabelLayout, UniversalTransition]);
 
 function RankChart<T>({
   data,

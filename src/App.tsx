@@ -4,6 +4,9 @@ import { CanvasRenderer } from 'echarts/renderers';
 import rankData from './rank-data.json';
 import sortData from './sort-data.json';
 import { useFPS } from './utils/useFPS';
+import { DatasetComponent, GridComponent, LegendComponent, SingleAxisComponent, TitleComponent, ToolboxComponent, TooltipComponent, TransformComponent } from 'echarts/components';
+import { LabelLayout, UniversalTransition } from 'echarts/features';
+import { BarChart, LineChart as ELineChart, ScatterChart } from 'echarts/charts';
 
 const dft = new Intl.DateTimeFormat(['en-US'], {
   month: 'short',
@@ -17,6 +20,21 @@ const format = (val: unknown): string => {
 };
 
 use(CanvasRenderer);
+use([TransformComponent, LabelLayout, UniversalTransition]);
+use([TransformComponent, LabelLayout, UniversalTransition]);
+use([TitleComponent]);
+use([TransformComponent, LabelLayout, UniversalTransition]);
+use(ToolboxComponent);
+use([TransformComponent, LabelLayout, UniversalTransition]);
+use(GridComponent);
+use(SingleAxisComponent);
+use(ELineChart);
+use(DatasetComponent);
+use(LegendComponent);
+use(ScatterChart);
+use(BarChart);
+use(TooltipComponent);
+
 
 function App() {
   const fps = useFPS(1000)
